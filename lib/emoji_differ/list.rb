@@ -1,9 +1,10 @@
 require "json"
+require "emoji_differ/emoji"
 
 module EmojiDiffer
   class List
     def initialize(jsonb)
-      @emojis = transform(jsonb)
+      @emojis = transform(jsonb).map { |name, picture_link| EmojiDiffer::Emoji.new(name, picture_link) }
     end
 
     def to_s
@@ -16,7 +17,7 @@ module EmojiDiffer
 
     private
       def transform(jsonb)
-        JSON.parse(jsonb)
+        JSON.parse(jsonb)["emoji"]
       end
   end
 end
