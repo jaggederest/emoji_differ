@@ -5,7 +5,7 @@ module EmojiDiffer
   class SlackApi < Struct.new(:token)
     API_ENDPOINT = 'https://slack.com/api/emoji.list'
 
-    def emojis
+    def emoji
       uri = URI(API_ENDPOINT)
       uri.query = URI.encode_www_form({
         token: token,
