@@ -1,4 +1,5 @@
 require "net/https"
+require "emoji_differ/list"
 
 module EmojiDiffer
   class SlackApi < Struct.new(:token)
@@ -6,11 +7,11 @@ module EmojiDiffer
 
     def emojis
       uri = URI(API_ENDPOINT)
-      uri.query = uri.encode_www_form({
+      uri.query = URI.encode_www_form({
         token: token,
       })
 
-      handle = Net::HTTPS.get_response(uri)
+      handle = Net::HTTP.get_response(uri)
 
       if !handle.is_a?(Net::HTTPSuccess)
         raise "Slack API is out of business today, #{handle.inspect}"
