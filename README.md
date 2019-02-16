@@ -22,7 +22,24 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Either set `SLACK_API_TOKEN` env variable or create a `.slack_token` file in your home directory, then try the gem:
+
+    require 'emoji_differ'
+    # update file on disk with current emoji in your team
+    EmojiDiffer.save
+
+Get current emoji as an `EmojiDiffer::List` of `EmojiDiffer::Emoji` instances, for programmatic use:
+
+    EmojiDiffer.current
+
+Some time later ...
+
+    # returns an EmojiDiffer::List of EmojiDiffer::Emoji instances, for programmatic use
+    EmojiDiffer.new_emoji
+    # outputs new emoji since the last time .save_emoji was called, in :name: format for pasting into slack
+    EmojiDiffer.new_emoji.to_s
+    EmojiDiffer.clear
+    EmojiDiffer.save
 
 ## Development
 

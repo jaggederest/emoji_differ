@@ -13,15 +13,15 @@ module EmojiDiffer
     end
   end
 
-  def self.current_emoji
-    @current_emoji ||= EmojiDiffer::SlackApi.new(config.token).emoji
+  def self.current
+    @current ||= EmojiDiffer::SlackApi.new(config.token).emoji
   end
 
   def self.new_emoji
-    current_emoji.reject {|x| load_emoji.map(&:name).include?(x.name) }.map(&:to_s).join(" ")
+    current.reject {|x| load.map(&:name).include?(x.name) }.map(&:to_s).join(" ")
   end
 
-  def self.save_emoji
+  def self.save
     File.open(config.cache_location, 'w') do |f|
       f.print EmojiDiffer::SlackApi.new(config.token).emoji.to_json
     end
@@ -34,7 +34,7 @@ module EmojiDiffer
     retry
   end
 
-  def self.load_emoji
+  def self.load
     File.open(config.cache_location, 'r') do |f|
       contents = ''
 
