@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+
+require 'emoji_differ'
+
+cmd = ARGV.shift
+case 
+  when (cmd == 'update')
+    EmojiDiffer.clear
+    EmojiDiffer.save
+  when (cmd == 'clear')
+    EmojiDiffer.clear
+  when (cmd == 'show')
+    subcommand = ARGV.shift
+    puts case 
+      when (subcommand == 'old')
+        EmojiDiffer.load
+      when (subcommand == 'deleted')
+        EmojiDiffer.deleted
+      when (subcommand == 'current')
+        EmojiDiffer.current
+      when (subcommand == 'new')
+        EmojiDiffer.new_emoji
+      else
+        'Try emoji_differ show TYPE where type is one of old, deleted, current, new'
+    end
+  else
+    puts 'Try emoji_differ COMMAND where command is one of show, update, or clear'
+end

@@ -5,33 +5,48 @@ module EmojiDiffer
   class List
     include Enumerable
 
-    def initialize(json)
-      @parsed = parse(json)
-      @emojis = transform
+    def initialize(emoji=nil)
+      @emojis = emoji
+    end
+
+    def self.from_json(json)
+      new.parse(json)
     end
 
     def to_s
-      @emojis.to_s
+      collection = emojis.map(&:to_s).join(" ")
+      "#{collection}\n Total: #{length}"
     end
 
     def each
-      @emojis.each do |emoji|
+      emojis.each do |emoji|
         yield emoji
       end
     end
 
+    def -(other)
+      other_names = other.emojis.to_a.map(&:name)
+      self.class.new(emojis.reject {|emoji| other_names.include?(emoji.name) })
+    end
+
     def length
-      @emojis.length
+      emojis.length
     end
 
     def to_json
       JSON.generate(parsed) #cheeky eh
     end
 
+    def emojis
+      @emojis ||= transform
+    end
+
+    def parse(json)
+      @parsed = JSON.parse(json)
+      self
+    end
+
     private
-      def parse(json)
-        JSON.parse(json)
-      end
 
       attr_reader :parsed
 
