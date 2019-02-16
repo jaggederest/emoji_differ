@@ -1,8 +1,7 @@
 module EmojiDiffer
   class Emoji < Struct.new(:name, :picture_link)
-
     def to_s
-      name
+      ":#{name}:"
     end
   end
 end

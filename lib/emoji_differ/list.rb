@@ -3,12 +3,20 @@ require "emoji_differ/emoji"
 
 module EmojiDiffer
   class List
+    include Enumerable
+
     def initialize(jsonb)
       @emojis = transform(jsonb).map { |name, picture_link| EmojiDiffer::Emoji.new(name, picture_link) }
     end
 
     def to_s
       @emojis.to_s
+    end
+    
+    def each
+      @emojis.each do |emoji|
+        yield emoji
+      end
     end
 
     def to_json

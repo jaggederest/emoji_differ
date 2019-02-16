@@ -5,19 +5,24 @@ module EmojiDiffer
   class SlackApi < Struct.new(:token)
     API_ENDPOINT = 'https://slack.com/api/emoji.list'
 
-    def emoji
-      uri = URI(API_ENDPOINT)
-      uri.query = URI.encode_www_form({
-        token: token,
-      })
-
-      handle = Net::HTTP.get_response(uri)
-
-      if !handle.is_a?(Net::HTTPSuccess)
-        raise "Slack API is out of business today, #{handle.inspect}"
+    def raw_response
+      Net::HTTP.get_response(uri).tap do |handle|
+        if !handle.is_a?(Net::HTTPSuccess)
+          raise "Slack API is out of business today, #{handle.inspect}"
+        end
       end
+    end
 
-      EmojiDiffer::List.new(handle.body)
+    def uri
+      URI(API_ENDPOINT).tap do |uri|
+        uri.query = URI.encode_www_form({
+          token: token,
+        })
+      end
+    end
+
+    def emoji
+      EmojiDiffer::List.new(raw_response)
     end
   end
 end
