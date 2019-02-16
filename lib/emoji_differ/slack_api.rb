@@ -22,7 +22,7 @@ module EmojiDiffer
     end
 
     def emoji
-      EmojiDiffer::List.new(raw_response)
+      EmojiDiffer::List.new(raw_response.body)
     end
   end
 end

@@ -6,13 +6,14 @@ module EmojiDiffer
     include Enumerable
 
     def initialize(jsonb)
-      @emojis = transform(jsonb).map { |name, picture_link| EmojiDiffer::Emoji.new(name, picture_link) }
+      parse(jsonb)
+      @emojis = transform(jsonb)
     end
 
     def to_s
       @emojis.to_s
     end
-    
+
     def each
       @emojis.each do |emoji|
         yield emoji
@@ -20,12 +21,24 @@ module EmojiDiffer
     end
 
     def to_json
-      raise "Unimplemented"
+      parsed #cheeky eh
     end
 
     private
+      def parse(json)
+        @parsed = JSON.parse(jsonb)
+      end
+
+      def parsed
+        @parsed
+      end
+
+      def timestamp
+        parsed['cache_ts'].to_f
+      end
+
       def transform(jsonb)
-        JSON.parse(jsonb)["emoji"]
+        parsed['emoji'].map { |name, picture_link| EmojiDiffer::Emoji.new(name, picture_link, timestamp) }
       end
   end
 end
