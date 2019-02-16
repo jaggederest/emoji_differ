@@ -6,20 +6,24 @@ module EmojiDiffer
   class Error < StandardError; end
   def self.config
     @config ||= EmojiDiffer::Config.new
-    yield @config
+    if block_given?
+      yield @config
+    else
+      @config
+    end
   end
 
   def self.current_emoji
-    EmojiDiffer::SlackApi.new(slack_token).emoji
+    @current_emoji ||= EmojiDiffer::SlackApi.new(config.token).emoji
   end
 
   def self.new_emoji
-    load_emoji.reject {|x| current_emoji.map(&:name).include?(x.name) }
+    current_emoji.reject {|x| load_emoji.map(&:name).include?(x.name) }.map(&:to_s).join(" ")
   end
 
   def self.save_emoji
     File.open(config.cache_location, 'w') do |f|
-      f.print EmojiDiffer::SlackApi.new(config.token).to_json
+      f.print EmojiDiffer::SlackApi.new(config.token).emoji.to_json
     end
   end
 

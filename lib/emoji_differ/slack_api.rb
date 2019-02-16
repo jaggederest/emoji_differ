@@ -6,7 +6,7 @@ module EmojiDiffer
     API_ENDPOINT = 'https://slack.com/api/emoji.list'
 
     def raw_response
-      Net::HTTP.get_response(uri).tap do |handle|
+      @raw_response ||= Net::HTTP.get_response(uri).tap do |handle|
         if !handle.is_a?(Net::HTTPSuccess)
           raise "Slack API is out of business today, #{handle.inspect}"
         end

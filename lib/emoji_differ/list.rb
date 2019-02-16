@@ -5,9 +5,9 @@ module EmojiDiffer
   class List
     include Enumerable
 
-    def initialize(jsonb)
-      parse(jsonb)
-      @emojis = transform(jsonb)
+    def initialize(json)
+      @parsed = parse(json)
+      @emojis = transform
     end
 
     def to_s
@@ -20,24 +20,26 @@ module EmojiDiffer
       end
     end
 
+    def length
+      @emojis.length
+    end
+
     def to_json
-      parsed #cheeky eh
+      JSON.generate(parsed) #cheeky eh
     end
 
     private
       def parse(json)
-        @parsed = JSON.parse(jsonb)
+        JSON.parse(json)
       end
 
-      def parsed
-        @parsed
-      end
+      attr_reader :parsed
 
       def timestamp
         parsed['cache_ts'].to_f
       end
 
-      def transform(jsonb)
+      def transform
         parsed['emoji'].map { |name, picture_link| EmojiDiffer::Emoji.new(name, picture_link, timestamp) }
       end
   end
