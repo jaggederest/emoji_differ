@@ -30,6 +30,12 @@ module EmojiDiffer
     current - load
   end
 
+  def self.clear
+    File.open(config.cache_location, "w") do |f|
+      f.truncate(0)
+    end
+  end
+
   def self.save
     File.open(config.cache_location, 'w') do |f|
       f.print EmojiDiffer::SlackApi.new(config.token).emoji.to_json
